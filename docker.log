@@ -1,0 +1,2 @@
+CONTAINER ID   IMAGE            COMMAND            CREATED       STATUS                     PORTS     NAMES
+e13fab2a6846   dpage/pgadmin4   "/entrypoint.sh"   2 weeks ago   Exited (0) 5 minutes ago             pgAdmin

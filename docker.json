@@ -1,0 +1,6 @@
+[{"ID": "c7c93c60e3c6","Image": "nginx:alpine","Names": "hydroiq_nginx", "Ports": "", "Status": "Exited (0) 5 days ago"}
+{"ID": "e13fab2a6846","Image": "dpage/pgadmin4","Names": "pgAdmin", "Ports": "", "Status": "Exited (0) 5 days ago"}
+{"ID": "c63c0d8852b8","Image": "redis:alpine","Names": "hydroiq_redis", "Ports": "", "Status": "Exited (0) 5 days ago"}
+{"ID": "dcd26734bd89","Image": "hydroiq-admin-app","Names": "hydroiq_app", "Ports": "9000/tcp, 0.0.0.0:9000->80/tcp", "Status": "Exited (255) 2 days ago"}
+{"ID": "bf63037f1a76","Image": "postgres","Names": "hydroiq_db", "Ports": "", "Status": "Exited (0) 5 days ago"}
+]
