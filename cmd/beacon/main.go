@@ -4,7 +4,7 @@ import (
 	"docker-watch/pkg/discord"
 	"encoding/json"
 	"fmt"
-	"os"
+	"log"
 	"os/exec"
 	"strings"
 )
@@ -16,11 +16,9 @@ type DockerContainer struct {
 }
 
 func main() {
-	bot, err := discord.OpenSession()
-
+	bot, err := openDiscordSession()
 	if err != nil {
-		fmt.Printf("error creating docker session: %v\n", err)
-		return
+		log.Fatalf("Error creating Discord session: %v", err)
 	}
 
 	output, err := runDockerPs()
@@ -29,18 +27,27 @@ func main() {
 		fmt.Printf("error executing docker ps: %s\n", err)
 	}
 
-	stringOutput := string(output)
-
-	dockerContainers := getDockerContainersFromOutput(strings.Split(stringOutput, "\n"))
+	dockerContainers := parseDockerContainers(string(output))
 
 	if len(dockerContainers) == 0 {
 		fmt.Println("All good now!")
 	} else {
 		sendNotification(bot, dockerContainers)
 	}
+}
 
-	_, err = writeToFile("docker.json", "["+stringOutput+"]")
+func parseDockerContainers(outputString string) []DockerContainer {
+	return getDockerContainersFromOutput(strings.Split(outputString, "\n"))
+}
 
+func openDiscordSession() (*discord.DockerBot, error) {
+	bot, err := discord.OpenSession()
+
+	if err != nil {
+		return nil, fmt.Errorf("error opening Discord session: %v", err)
+	}
+
+	return bot, nil
 }
 
 func sendNotification(bot *discord.DockerBot, containers []DockerContainer) {
@@ -71,24 +78,6 @@ func runDockerPs() ([]byte, error) {
 	cmd := exec.Command("docker", "ps", "-a", "--format", outputTemplate, "--filter", "status=exited")
 	output, err := cmd.CombinedOutput()
 	return output, err
-}
-
-func writeToFile(filename string, data string) (any, error) {
-	file, err := os.Create(filename)
-
-	if err != nil {
-		return nil, err
-	}
-
-	defer file.Close()
-
-	_, err = file.WriteString(data)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return nil, nil
 }
 
 func getDockerContainersFromOutput(input []string) []DockerContainer {
